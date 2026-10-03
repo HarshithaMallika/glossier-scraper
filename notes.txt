@@ -1,0 +1,168 @@
+This is important because the assignment specifically asks for **assumptions, key decisions, tradeoffs, tools, and AI usage**.
+
+Paste:
+
+```text
+Glossier Scraping Test - Technical Notes
+
+1. Objective
+
+The objective was to implement Exercise 1 of the Data Engineer Scraping Test and extract structured product information from the Glossier Shop All collection.
+
+The scraper supports:
+
+- Task 1: First-page product information
+- Task 2: All products in the category
+- Task 3: Product descriptions
+- Task 4: Product variants as unique products
+- Task 5: Repeat scraping using the US location
+
+
+2. Tools Used
+
+Python was selected as the main programming language.
+
+Libraries used:
+
+- Playwright - browser automation and collection page loading
+- Requests - retrieving product JSON data
+- BeautifulSoup - parsing product descriptions
+- CSV - writing the final dataset
+- JSON - storing the image array in CSV format
+
+
+3. Key Decisions
+
+Playwright was used for the collection page because it provides a real browser environment and allows the scraper to handle dynamically rendered page content.
+
+Product URLs are collected from links containing /products/.
+
+External links are filtered out so that only Glossier product pages are processed.
+
+Product information is retrieved from the product JSON endpoint associated with each product.
+
+Product descriptions are converted from HTML into plain text.
+
+Images are maintained as an array of strings in the scraper and serialized as JSON text when written to CSV.
+
+Variants are treated as unique rows using their variant IDs.
+
+
+4. Pagination
+
+The scraper processes collection pages sequentially.
+
+A page is considered the end of the collection when it does not produce any new product URLs.
+
+Duplicate URLs are ignored.
+
+
+5. Location Handling
+
+The scraper uses one LOCATION configuration.
+
+For India:
+
+LOCATION = "IN"
+
+For US:
+
+LOCATION = "US"
+
+An if/else statement selects the corresponding collection URL, browser locale, and timezone.
+
+This allows the same scraping logic to be reused for both locations.
+
+
+6. Output
+
+The output CSV contains:
+
+product_name
+product_id
+image
+url
+price
+scraped_at
+description
+variant_id
+variant_name
+variant_price
+
+The image field is stored as JSON text so that the original array of image URLs is preserved in the CSV.
+
+
+7. Assumptions
+
+- The product ID supplied by the site's product data is treated as the unique product ID.
+- Variant IDs are used to identify individual variants.
+- Product images may contain multiple URLs.
+- Collection pagination can be detected by checking whether a page contains new product URLs.
+- The scraper is intended for a practical assignment-scale workload.
+
+
+8. Tradeoffs
+
+The implementation intentionally uses a simple sequential scraping approach.
+
+This makes the scraper easier to understand and reproduce but means that it is not optimized for very large-scale scraping.
+
+The scraper prioritizes clarity and reliability over concurrency or advanced scraping infrastructure.
+
+
+9. Reliability
+
+The scraper includes error handling around product-level requests.
+
+If an individual product request fails, the error is printed and the scraper continues processing the remaining products.
+
+The output directory is created automatically if it does not already exist.
+
+
+10. AI Usage
+
+AI assistance was used during development.
+
+AI helped with:
+
+- Understanding the assignment requirements
+- Python syntax and boilerplate
+- Structuring scraping functions
+- Debugging errors
+- URL filtering
+- Pagination logic
+- Product JSON handling
+- Variant extraction
+- Location-based scraping
+
+The code was reviewed and modified manually.
+
+The final implementation was tested from the command line and adjusted based on the observed scraper output and errors.
+
+
+11. Manual Changes
+
+Manual changes were made to:
+
+- Configure the project paths
+- Configure the India and US collection URLs
+- Configure the output CSV fields
+- Handle the assignment-specific product fields
+- Handle product variants
+- Handle pagination
+- Handle CSV image serialization
+- Troubleshoot runtime errors
+- Select the final project structure
+
+
+12. Reproducibility
+
+The project includes:
+
+- scraper.py
+- requirements.txt
+- README.md
+- notes.txt
+- .gitignore
+
+The scraper can be run from the command line after installing the required Python packages and Playwright browser.
